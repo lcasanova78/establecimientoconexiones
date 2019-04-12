@@ -25,43 +25,42 @@ public class Conexion {
     private ResultSet result;
     private String consulta;
 
-    public Conexion() {
+    public Conexion(String consulta) {
         try {
             con = DriverManager.getConnection(
                     "jdbc:mysql://localhost/" + db + "?serverTimezone=UTC", "root", "Chula378!");
- 
-        } catch (Exception ex) {
-
-        }
-    }
-
-
-    public void setQuery(String aux) {
-        try {
-            this.consulta=aux;
-            this.query = con.createStatement();
+            query = con.createStatement();
+            result = query.executeQuery(consulta);
         } catch (SQLException ex) {
-            Logger.getLogger(Conexion.class.getName()).log(Level.SEVERE, null, ex);
+            System.out.println("Error en la conexion con " + db + ": " + ex.toString());
         }
-        
-        
+
     }
 
-    public ResultSet getResult() {
+    public String getDataBase() {
+        return this.db;
+    }
+
+    public void setQuery(String consulta) {
         try {
             result = query.executeQuery(consulta);
         } catch (SQLException ex) {
             Logger.getLogger(Conexion.class.getName()).log(Level.SEVERE, null, ex);
         }
-         return result;
     }
-    public void close(){
+
+    public ResultSet getResult() {
+        return this.result;
+    }
+
+    public void close() {
         try {
-            this.con.close();
+            result.close();
+            query.close();
+            con.close();
         } catch (SQLException ex) {
             Logger.getLogger(Conexion.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
 
 }
